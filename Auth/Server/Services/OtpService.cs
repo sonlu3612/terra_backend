@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
-namespace Auth.Services
+namespace Server.Services
 {
     public class OtpService: IOtpService
     {

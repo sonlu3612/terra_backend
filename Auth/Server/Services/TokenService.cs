@@ -1,9 +1,9 @@
-﻿using Auth.Models;
+﻿using Server.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Auth.Services
+namespace Server.Services
 {
     public class TokenService:ITokenService
     {

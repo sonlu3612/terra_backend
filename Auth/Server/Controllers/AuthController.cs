@@ -1,6 +1,6 @@
-﻿using Auth.DTOs;
-using Auth.Models;
-using Auth.Services;
+﻿using Server.DTOs;
+using Server.Models;
+using Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Auth.Controllers
+namespace Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

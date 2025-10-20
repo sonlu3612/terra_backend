@@ -1,4 +1,4 @@
-﻿namespace Auth.Services
+﻿namespace Server.Services
 {
     public interface ISmsService
     {

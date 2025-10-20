@@ -1,6 +1,6 @@
-﻿using Auth.Models;
+﻿using Server.Models;
 
-namespace Auth.Services
+namespace Server.Services
 {
     public interface ITokenService
     {

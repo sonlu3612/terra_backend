@@ -1,4 +1,4 @@
-﻿namespace Auth.DTOs
+﻿namespace Server.DTOs
 {
     public class ResetPasswordDto
     {

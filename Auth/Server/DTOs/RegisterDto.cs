@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Auth.DTOs
+namespace Server.DTOs
 {
-    public class LoginDto
+    public class RegisterDto
     {
         public string? Email { get; set; }
 
         [RegularExpression(@"^\+?\d{10,15}$", ErrorMessage = "Invalid phone number format")]
         public string? PhoneNumber { get; set; }
-
         public string Password { get; set; }
 
         public void Validate()

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 
-namespace Auth.Services
+namespace Server.Services
 {
     public class EmailSender : IEmailSender
     {

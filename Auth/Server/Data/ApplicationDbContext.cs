@@ -1,8 +1,8 @@
-﻿using Auth.Models;
+﻿using Server.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Auth.Data
+namespace Server.Data
 {
     public class ApplicationDbContext:IdentityDbContext<ApplicationUser>
     {
