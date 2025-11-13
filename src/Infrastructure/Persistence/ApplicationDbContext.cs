@@ -1,6 +1,6 @@
-﻿using Server.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Core.Entities;
 
 namespace Infrastructure.Persistence
 {
