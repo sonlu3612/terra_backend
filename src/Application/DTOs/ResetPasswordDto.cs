@@ -1,9 +1,11 @@
-﻿namespace Application.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Application.DTOs
 {
     public class ResetPasswordDto
     {
-        public string Email { get; set; }
-        public string Token { get; set; }
-        public string NewPassword { get; set; }
+        [Required] public string UserId { get; set; } = string.Empty;
+        [Required] public string Otp { get; set; } = string.Empty;
+        [Required] public string NewPassword { get; set; } = string.Empty;
     }
 }
