@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "description": "Terra Backend",
+  "scripts": {
+    "dev": "cd src/WebApi && dotnet run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonlu3612/terra_backend.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/sonlu3612/terra_backend/issues"
+  },
+  "homepage": "https://github.com/sonlu3612/terra_backend#readme"
+}

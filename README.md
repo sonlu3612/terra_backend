@@ -1,5 +1,17 @@
 # terra_backend
 
+## Run the solution
+
+There are two ways to run the solution:
+
+1. Using Visual Studio: Open the `SocialMedia.sln` solution file and click on the `Run` button.
+
+2. Using Command Line (Require npm installed):
+
+  ```bash
+  npm run dev
+  ```
+
 ## Project Structure
 
 This project followed clean architecture principles. The directory structure is organized as follows:
