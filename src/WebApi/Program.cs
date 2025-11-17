@@ -1,22 +1,4 @@
-﻿using Infrastructure.Persistence;
-using Core.Entities;
-using Core.Interfaces;
-using Infrastructure.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Add DbContext
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Add Identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-// Add application services
-builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -43,7 +25,6 @@ app.Use(async (context, next) =>
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
