@@ -14,6 +14,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     )
 );
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
+// ============ Application Services ============
+// TODO: Uncomment and implement these services later
+// builder.Services.AddScoped<Infrastructure.Services.ITokenService, Infrastructure.Services.TokenService>();
+// builder.Services.AddScoped<Core.Interfaces.IOtpService, Infrastructure.Services.OtpService>();
+// builder.Services.AddScoped<Core.Interfaces.ISmsService, Infrastructure.Services.SmsService>();
+// builder.Services.AddScoped<Core.Interfaces.IEmailSender, Infrastructure.Services.EmailSender>();
+
 // ============ MediatR ============
 builder.Services.AddMediatR(cfg =>
 {
@@ -74,6 +85,8 @@ app.UseHttpsRedirection();
 
 // TODO: Change policyname when restricting CORS
 app.UseCors("AllowAll");
+
+// TODO: Authentication middleware will be added later
 
 app.MapControllers();
 
