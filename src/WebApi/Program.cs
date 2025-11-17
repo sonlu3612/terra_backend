@@ -1,33 +1,98 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Core.Entities;
+using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using WebApi.Middleware;
 
+var builder = WebApplication.CreateBuilder(args);
+
+// ============ Entity Framework & Identity Setup ============
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("Infrastructure")
+    )
+);
+
+// ============ MediatR ============
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(Application.Features.Queries.Users.GetCurrentUserQuery).Assembly);
+});
+
+// ============ API Documentation ============
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Terra Backend API",
+        Version = "v1",
+        Description = "API for Terra social media application"
+    });
+});
+
+// ============ CORS ============
+// TODO: Restrict CORS origins when frontend is deployed
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
-// Always enable Swagger and Swagger UI so users are redirected to API docs
-app.UseSwagger();
-app.UseSwaggerUI();
-
-// Redirect root URL to Swagger UI (so visiting / opens the docs)
-app.Use(async (context, next) =>
+// ============ Middleware Pipeline ============
+if (app.Environment.IsDevelopment())
 {
-    if (context.Request.Path == "/")
-    {
-        // Redirect to the Swagger UI landing page
-        context.Response.Redirect("/swagger");
-        return;
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
-    await next();
-});
+    // Redirect root URL to Swagger UI
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path == "/")
+        {
+            context.Response.Redirect("/swagger");
+            return;
+        }
+
+        await next();
+    });
+}
+
+// Global exception handler middleware
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+// TODO: Change policyname when restricting CORS
+app.UseCors("AllowAll");
 
 app.MapControllers();
 
+// ============ Database Initialization ============
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
+
+    try
+    {
+        // Apply pending migrations
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
+}
 
 app.Run();
