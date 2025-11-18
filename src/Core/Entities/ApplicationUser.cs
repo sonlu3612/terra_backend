@@ -35,5 +35,13 @@ namespace Core.Entities
         public virtual ICollection<TweetLike> Likes { get; set; } = new List<TweetLike>();
         public virtual ICollection<TweetRetweet> Retweets { get; set; } = new List<TweetRetweet>();
         public virtual ICollection<TweetBookmark> Bookmarks { get; set; } = new List<TweetBookmark>();
+
+        //Friend Request
+        public virtual ICollection<FriendRequest> SentFriendRequests { get; set; } = new List<FriendRequest>();
+        public virtual ICollection<FriendRequest> ReceivedFriendRequests { get; set; } = new List<FriendRequest>();
+
+        //Block
+        public virtual ICollection<UserBlock> Blocking { get; set; } = new List<UserBlock>();   // Danh sách người mình chặn
+        public virtual ICollection<UserBlock> BlockedBy { get; set; } = new List<UserBlock>();   // Danh sách người chặn mình
     }
 }

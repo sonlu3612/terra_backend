@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251118153326_AddFriendRequestSystem")]
+    partial class AddFriendRequestSystem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -275,24 +278,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("TweetRetweets", (string)null);
                 });
 
-            modelBuilder.Entity("Core.Entities.UserBlock", b =>
-                {
-                    b.Property<string>("BlockerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("BlockedId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("BlockedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("BlockerId", "BlockedId");
-
-                    b.HasIndex("BlockedId");
-
-                    b.ToTable("UserBlocks");
-                });
-
             modelBuilder.Entity("Core.Entities.UserFollow", b =>
                 {
                     b.Property<string>("FollowerId")
@@ -547,25 +532,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Core.Entities.UserBlock", b =>
-                {
-                    b.HasOne("Core.Entities.ApplicationUser", "Blocked")
-                        .WithMany("BlockedBy")
-                        .HasForeignKey("BlockedId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.ApplicationUser", "Blocker")
-                        .WithMany("Blocking")
-                        .HasForeignKey("BlockerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Blocked");
-
-                    b.Navigation("Blocker");
-                });
-
             modelBuilder.Entity("Core.Entities.UserFollow", b =>
                 {
                     b.HasOne("Core.Entities.ApplicationUser", "Follower")
@@ -638,10 +604,6 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Core.Entities.ApplicationUser", b =>
                 {
-                    b.Navigation("BlockedBy");
-
-                    b.Navigation("Blocking");
-
                     b.Navigation("Bookmarks");
 
                     b.Navigation("Followers");

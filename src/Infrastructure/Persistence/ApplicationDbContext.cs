@@ -12,11 +12,14 @@ namespace Infrastructure.Persistence
         }
 
         public DbSet<UserFollow> UserFollows { get; set; }
+
+        public DbSet<FriendRequest> FriendRequests { get; set; } = null!;
+        public DbSet<UserBlock> UserBlocks { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            // ====================== USER FOLLOW (bạn dùng class UserFollow) ======================
+            // ====================== USER FOLLOW ======================
             builder.Entity<UserFollow>(entity =>
             {
                 entity.HasKey(uf => new { uf.FollowerId, uf.FollowingId });
@@ -53,6 +56,7 @@ namespace Infrastructure.Persistence
                       .HasForeignKey(t => t.ParentTweetId)
                       .OnDelete(DeleteBehavior.NoAction);
             });
+
             // ====================== TWEET LIKE ======================
             builder.Entity<TweetLike>(entity =>
             {
@@ -99,6 +103,44 @@ namespace Infrastructure.Persistence
                       .WithMany(t => t.Bookmarks)
                       .HasForeignKey(b => b.TweetId)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // ====================== FRIEND REQUEST ======================
+            builder.Entity<FriendRequest>(entity =>
+            {
+                entity.HasOne(fr => fr.Requester)
+                      .WithMany(u => u.SentFriendRequests)
+                      .HasForeignKey(fr => fr.RequesterId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(fr => fr.Addressee)
+                      .WithMany(u => u.ReceivedFriendRequests)
+                      .HasForeignKey(fr => fr.AddresseeId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                //index
+                entity.HasIndex(fr => fr.RequesterId);
+                entity.HasIndex(fr => fr.AddresseeId);
+                entity.HasIndex(fr => fr.Status);
+            });
+
+            // ====================== BLOCK ======================
+
+            builder.Entity<UserBlock>(entity =>
+            {
+                entity.HasKey(ub => new { ub.BlockerId, ub.BlockedId });
+
+                entity.HasOne(ub => ub.Blocker)
+                      .WithMany(u => u.Blocking)
+                      .HasForeignKey(ub => ub.BlockerId)
+                      .OnDelete(DeleteBehavior.NoAction); //xử lý ở service(xóa block trước hoặc soft-delete)
+
+                entity.HasOne(ub => ub.Blocked)
+                      .WithMany(u => u.BlockedBy)
+                      .HasForeignKey(ub => ub.BlockedId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasIndex(ub => ub.BlockedId);
             });
             // ====================== TÙY CHỈNH TÊN BẢNG  ======================
             builder.Entity<ApplicationUser>().ToTable("Users");

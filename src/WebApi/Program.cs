@@ -95,8 +95,9 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IOtpService, OtpService>();
 builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
-
 builder.Services.AddScoped<IFollowService, FollowService>();
+builder.Services.AddScoped<IFriendService, FriendService>();
+builder.Services.AddScoped<IBlockService, BlockService>();
 
 builder.Services.AddMemoryCache(); // Cho OTP
 
