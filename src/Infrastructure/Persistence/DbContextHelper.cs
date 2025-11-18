@@ -4,9 +4,15 @@ namespace Infrastructure.Persistence
     {
         public static string GetConnectionString()
         {
-            DotNetEnv.Env.Load(Path.Combine(Directory.GetCurrentDirectory(), ".env"));
+            string? connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new InvalidOperationException(
+                    "CONNECTION_STRING environment variable not found. Ensure .env file is loaded with DotNetEnv.Env.Load()");
+            }
 
-            return Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            return connectionString;
         }
     }
 }
