@@ -9,8 +9,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
         optionsBuilder.UseSqlServer(
-            DbContextHelper.GetConnectionString(),
-            b => b.MigrationsAssembly("Infrastructure")
+            DbContextHelper.GetConnectionString()
         );
         return new ApplicationDbContext(optionsBuilder.Options);
     }
