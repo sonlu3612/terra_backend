@@ -9,7 +9,7 @@ namespace Application.DTOs
         [RegularExpression(@"^\+?\d{10,15}$", ErrorMessage = "Invalid phone number format")]
         public string? PhoneNumber { get; set; }
 
-        public string Password { get; set; }
+        public string PasswordHash { get; set; }
 
         public void Validate()
         {
