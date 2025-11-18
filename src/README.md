@@ -23,19 +23,17 @@ CONNECTION_STRING= "Server=(your_server_name);Database=TerraDb;Integrated Securi
 cd src && dotnet ef database update
 ```
 
-or using npm script:
+or using npm script from the root directory (Require npm installed):
 
 ```bash
 npm run db:update
 ```
 
-## Run the solution
-
-There are two ways to run the solution:
+## Run the solution (2 ways)
 
 1. Using Visual Studio: Open the `SocialMedia.sln` solution file and click on the `Run` button.
 
-2. Using Command Line (Require npm installed):
+2. Using Command Line from the root directory (Require npm installed):
 
   ```bash
   npm run dev
