@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Middleware;
 
+// Load .env file BEFORE creating builder
+DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ============ Entity Framework & Identity Setup ============
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
+        DbContextHelper.GetConnectionString(),
         b => b.MigrationsAssembly("Infrastructure")
     )
 );
@@ -91,21 +94,21 @@ app.UseCors("AllowAll");
 app.MapControllers();
 
 // ============ Database Initialization ============
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ApplicationDbContext>();
+// using (var scope = app.Services.CreateScope())
+// {
+//     var services = scope.ServiceProvider;
+//     var context = services.GetRequiredService<ApplicationDbContext>();
 
-    try
-    {
-        // Apply pending migrations
-        context.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating the database.");
-    }
-}
+//     try
+//     {
+//         // Apply pending migrations
+//         context.Database.Migrate();
+//     }
+//     catch (Exception ex)
+//     {
+//         var logger = services.GetRequiredService<ILogger<Program>>();
+//         logger.LogError(ex, "An error occurred while migrating the database.");
+//     }
+// }
 
 app.Run();

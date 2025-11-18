@@ -25,6 +25,9 @@
     <!-- CQRS & Mediator -->
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
+
+    <!-- Environment Variables -->
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
   </ItemGroup>
 
 </Project>
