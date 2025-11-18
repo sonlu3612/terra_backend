@@ -4,6 +4,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251118044123_v2")]
+    partial class v2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,39 +145,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("Core.Entities.FriendRequest", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AddresseeId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("RequestedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RequesterId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("RespondedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AddresseeId");
-
-                    b.HasIndex("RequesterId");
-
-                    b.HasIndex("Status");
-
-                    b.ToTable("FriendRequests");
-                });
-
             modelBuilder.Entity("Core.Entities.Tweet", b =>
                 {
                     b.Property<string>("Id")
@@ -273,24 +243,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("TweetId");
 
                     b.ToTable("TweetRetweets", (string)null);
-                });
-
-            modelBuilder.Entity("Core.Entities.UserBlock", b =>
-                {
-                    b.Property<string>("BlockerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("BlockedId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("BlockedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("BlockerId", "BlockedId");
-
-                    b.HasIndex("BlockedId");
-
-                    b.ToTable("UserBlocks");
                 });
 
             modelBuilder.Entity("Core.Entities.UserFollow", b =>
@@ -453,25 +405,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("PinnedTweet");
                 });
 
-            modelBuilder.Entity("Core.Entities.FriendRequest", b =>
-                {
-                    b.HasOne("Core.Entities.ApplicationUser", "Addressee")
-                        .WithMany("ReceivedFriendRequests")
-                        .HasForeignKey("AddresseeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.ApplicationUser", "Requester")
-                        .WithMany("SentFriendRequests")
-                        .HasForeignKey("RequesterId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Addressee");
-
-                    b.Navigation("Requester");
-                });
-
             modelBuilder.Entity("Core.Entities.Tweet", b =>
                 {
                     b.HasOne("Core.Entities.Tweet", "ParentTweet")
@@ -547,25 +480,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Core.Entities.UserBlock", b =>
-                {
-                    b.HasOne("Core.Entities.ApplicationUser", "Blocked")
-                        .WithMany("BlockedBy")
-                        .HasForeignKey("BlockedId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.ApplicationUser", "Blocker")
-                        .WithMany("Blocking")
-                        .HasForeignKey("BlockerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Blocked");
-
-                    b.Navigation("Blocker");
-                });
-
             modelBuilder.Entity("Core.Entities.UserFollow", b =>
                 {
                     b.HasOne("Core.Entities.ApplicationUser", "Follower")
@@ -638,10 +552,6 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Core.Entities.ApplicationUser", b =>
                 {
-                    b.Navigation("BlockedBy");
-
-                    b.Navigation("Blocking");
-
                     b.Navigation("Bookmarks");
 
                     b.Navigation("Followers");
@@ -650,11 +560,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Navigation("Likes");
 
-                    b.Navigation("ReceivedFriendRequests");
-
                     b.Navigation("Retweets");
-
-                    b.Navigation("SentFriendRequests");
 
                     b.Navigation("Tweets");
                 });

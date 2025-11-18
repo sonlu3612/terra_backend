@@ -1,82 +1,47 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿// Core/Entities/ApplicationUser.cs
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace Core.Entities
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser   
     {
-        /// <summary>
-        /// User's display name (full name)
-        /// </summary>
+        public string FullName { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
-
-        /// <summary>
-        /// User bio/description
-        /// </summary>
-        public string? Bio { get; set; }
-
-        /// <summary>
-        /// Theme preference: light, dim, or lights-out
-        /// </summary>
-        public string Theme { get; set; } = "light";
-
-        /// <summary>
-        /// Accent color: blue, yellow, pink, purple, orange, green
-        /// </summary>
-        public string Accent { get; set; } = "blue";
-
-        /// <summary>
-        /// User's website URL
-        /// </summary>
-        public string? Website { get; set; }
-
-        /// <summary>
-        /// User's location
-        /// </summary>
-        public string? Location { get; set; }
-
-        /// <summary>
-        /// User's profile photo URL
-        /// </summary>
-        public string PhotoUrl { get; set; } = "/assets/twitter-avatar.jpg";
-
-        /// <summary>
-        /// User's cover photo URL
-        /// </summary>
-        public string? CoverPhotoUrl { get; set; }
-
-        /// <summary>
-        /// Whether the user is verified
-        /// </summary>
+        public string? Bio { get; set; } = string.Empty;
+        public string? Theme { get; set; } = "dark";
+        public string? Accent { get; set; } = "blue";
+        public string? Website { get; set; } = string.Empty;
+        public string? Location { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; } = string.Empty;        // avatar
+        public string? CoverPhotoURL { get; set; } = string.Empty;   // ảnh bìa
         public bool Verified { get; set; } = false;
-
-        /// <summary>
-        /// Total number of tweets created by this user
-        /// </summary>
+        public int FollowingCount { get; set; } = 0;
+        public int FollowersCount { get; set; } = 0;
         public int TotalTweets { get; set; } = 0;
-
-        /// <summary>
-        /// Total number of tweets with media created by this user
-        /// </summary>
         public int TotalPhotos { get; set; } = 0;
+        public string? PinnedTweetId { get; set; }   
 
-        /// <summary>
-        /// ID of the pinned tweet (if any)
-        /// </summary>
-        public Guid? PinnedTweetId { get; set; }
+        public virtual Tweet? PinnedTweet { get; set; }
 
-        /// <summary>
-        /// Timestamp of when the account was created
-        /// </summary>
-        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public virtual ICollection<Tweet> Tweets { get; set; } = new List<Tweet>();
 
-        /// <summary>
-        /// Timestamp of the last update to the account
-        /// </summary>
-        public DateTimeOffset? UpdatedAt { get; set; }
+        public virtual ICollection<UserFollow> Following { get; set; } = new List<UserFollow>();
+        public virtual ICollection<UserFollow> Followers { get; set; } = new List<UserFollow>();
 
-        /// <summary>
-        /// Email verification timestamp
-        /// </summary>
-        public DateTimeOffset? EmailVerifiedAt { get; set; }
+        // Like / Retweet / Bookmark
+        public virtual ICollection<TweetLike> Likes { get; set; } = new List<TweetLike>();
+        public virtual ICollection<TweetRetweet> Retweets { get; set; } = new List<TweetRetweet>();
+        public virtual ICollection<TweetBookmark> Bookmarks { get; set; } = new List<TweetBookmark>();
+
+        //Friend Request
+        public virtual ICollection<FriendRequest> SentFriendRequests { get; set; } = new List<FriendRequest>();
+        public virtual ICollection<FriendRequest> ReceivedFriendRequests { get; set; } = new List<FriendRequest>();
+
+        //Block
+        public virtual ICollection<UserBlock> Blocking { get; set; } = new List<UserBlock>();   // Danh sách người mình chặn
+        public virtual ICollection<UserBlock> BlockedBy { get; set; } = new List<UserBlock>();   // Danh sách người chặn mình
     }
 }
