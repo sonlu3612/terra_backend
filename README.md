@@ -30,11 +30,11 @@ SocialMedia.sln
 │   ├── Infrastructure
 │   │   ├── Persistence/ (DbContext, Migrations, Repositories Impl)
 │   │   └── Services/ (EmailService, FileStorageService Impl)
-│   └── WebApi
-│       ├── Controllers/
-│       ├── Hubs/ (SignalR Hubs)
-│       ├── Middleware/
-│       └── Program.cs
+│   ├── WebApi
+│   │   ├── Controllers/
+│   │   ├── Hubs/ (SignalR Hubs)
+│   │   └── Middleware/
+│   └── Program.cs
 └── tests (Maybe later)
     ├── Application.UnitTests/
     └── Infrastructure.IntegrationTests/
