@@ -6,29 +6,106 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class v2 : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                table: "AspNetUserClaims");
+            migrationBuilder.CreateTable(
+                name: "AspNetRoles",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                table: "AspNetUserLogins");
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                table: "AspNetUserRoles");
+            migrationBuilder.CreateTable(
+                name: "AspNetUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                });
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                table: "AspNetUserTokens");
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                });
 
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                });
 
             migrationBuilder.CreateTable(
                 name: "TweetBookmarks",
@@ -99,31 +176,29 @@ namespace Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    EmailVerifiedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
-                    Theme = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Accent = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Website = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PhotoUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    CoverPhotoUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Theme = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Accent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Website = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CoverPhotoURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Verified = table.Column<bool>(type: "bit", nullable: false),
                     FollowingCount = table.Column<int>(type: "int", nullable: false),
                     FollowersCount = table.Column<int>(type: "int", nullable: false),
                     TotalTweets = table.Column<int>(type: "int", nullable: false),
                     TotalPhotos = table.Column<int>(type: "int", nullable: false),
-                    PinnedTweetId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    PinnedTweetId1 = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    PinnedTweetId = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -137,8 +212,8 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Tweets_PinnedTweetId1",
-                        column: x => x.PinnedTweetId1,
+                        name: "FK_Users_Tweets_PinnedTweetId",
+                        column: x => x.PinnedTweetId,
                         principalTable: "Tweets",
                         principalColumn: "Id");
                 });
@@ -164,9 +239,35 @@ namespace Infrastructure.Persistence.Migrations
                         name: "FK_UserFollows_Users_FollowingId",
                         column: x => x.FollowingId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoleClaims_RoleId",
+                table: "AspNetRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserClaims_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TweetBookmarks_TweetId",
@@ -204,9 +305,9 @@ namespace Infrastructure.Persistence.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_PinnedTweetId1",
+                name: "IX_Users_PinnedTweetId",
                 table: "Users",
-                column: "PinnedTweetId1");
+                column: "PinnedTweetId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -260,8 +361,7 @@ namespace Infrastructure.Persistence.Migrations
                 table: "TweetBookmarks",
                 column: "UserId",
                 principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_TweetLikes_Tweets_TweetId",
@@ -276,8 +376,7 @@ namespace Infrastructure.Persistence.Migrations
                 table: "TweetLikes",
                 column: "UserId",
                 principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_TweetRetweets_Tweets_TweetId",
@@ -292,40 +391,37 @@ namespace Infrastructure.Persistence.Migrations
                 table: "TweetRetweets",
                 column: "UserId",
                 principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Tweets_Users_UserId",
                 table: "Tweets",
                 column: "UserId",
                 principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUserClaims_Users_UserId",
-                table: "AspNetUserClaims");
+                name: "FK_Tweets_Users_UserId",
+                table: "Tweets");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUserLogins_Users_UserId",
-                table: "AspNetUserLogins");
+            migrationBuilder.DropTable(
+                name: "AspNetRoleClaims");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUserRoles_Users_UserId",
-                table: "AspNetUserRoles");
+            migrationBuilder.DropTable(
+                name: "AspNetUserClaims");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUserTokens_Users_UserId",
-                table: "AspNetUserTokens");
+            migrationBuilder.DropTable(
+                name: "AspNetUserLogins");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Users_Tweets_PinnedTweetId1",
-                table: "Users");
+            migrationBuilder.DropTable(
+                name: "AspNetUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
                 name: "TweetBookmarks");
@@ -340,79 +436,13 @@ namespace Infrastructure.Persistence.Migrations
                 name: "UserFollows");
 
             migrationBuilder.DropTable(
-                name: "Tweets");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                table: "AspNetUserClaims",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                table: "AspNetUserLogins",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                table: "AspNetUserRoles",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                table: "AspNetUserTokens",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.DropTable(
+                name: "Tweets");
         }
     }
 }

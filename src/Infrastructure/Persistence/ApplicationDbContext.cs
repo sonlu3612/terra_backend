@@ -17,17 +17,19 @@ namespace Infrastructure.Persistence
             // ====================== USER FOLLOW (bạn dùng class UserFollow) ======================
             builder.Entity<UserFollow>(entity =>
             {
-                entity.HasKey(uf => new { uf.FollowerId, uf.FollowingId }); // Composite key
+                entity.HasKey(uf => new { uf.FollowerId, uf.FollowingId });
 
                 entity.HasOne(uf => uf.Follower)
-                      .WithMany(u => u.Following)   // Người mình follow
+                      .WithMany(u => u.Following)
                       .HasForeignKey(uf => uf.FollowerId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Cascade);    
 
                 entity.HasOne(uf => uf.Following)
-                      .WithMany(u => u.Followers)   // Người follow mình
+                      .WithMany(u => u.Followers)
                       .HasForeignKey(uf => uf.FollowingId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.NoAction); 
+
+                entity.HasIndex(uf => uf.FollowingId);
             });
 
             // ====================== TWEET ======================
@@ -35,23 +37,20 @@ namespace Infrastructure.Persistence
             {
                 entity.HasKey(t => t.Id);
                 entity.Property(t => t.Id).HasMaxLength(50).ValueGeneratedOnAdd();
-
                 entity.Property(t => t.Text).IsRequired().HasMaxLength(280);
-                entity.Property(t => t.Images).HasColumnType("nvarchar(max)"); // JSON array URLs
+                entity.Property(t => t.Images).HasColumnType("nvarchar(max)");
 
-                // Quan hệ với User
                 entity.HasOne(t => t.User)
                       .WithMany(u => u.Tweets)
                       .HasForeignKey(t => t.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.NoAction); 
 
                 // Reply / Thread
                 entity.HasOne(t => t.ParentTweet)
                       .WithMany(t => t.Replies)
                       .HasForeignKey(t => t.ParentTweetId)
-                      .OnDelete(DeleteBehavior.NoAction); // Tránh cascade delete loop
+                      .OnDelete(DeleteBehavior.NoAction);
             });
-
             // ====================== TWEET LIKE ======================
             builder.Entity<TweetLike>(entity =>
             {
@@ -60,7 +59,7 @@ namespace Infrastructure.Persistence
                 entity.HasOne(l => l.User)
                       .WithMany(u => u.Likes)
                       .HasForeignKey(l => l.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.NoAction);
 
                 entity.HasOne(l => l.Tweet)
                       .WithMany(t => t.Likes)
@@ -76,7 +75,7 @@ namespace Infrastructure.Persistence
                 entity.HasOne(r => r.User)
                       .WithMany(u => u.Retweets)
                       .HasForeignKey(r => r.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.NoAction);
 
                 entity.HasOne(r => r.Tweet)
                       .WithMany(t => t.Retweets)
@@ -92,15 +91,14 @@ namespace Infrastructure.Persistence
                 entity.HasOne(b => b.User)
                       .WithMany(u => u.Bookmarks)
                       .HasForeignKey(b => b.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.NoAction);
 
                 entity.HasOne(b => b.Tweet)
                       .WithMany(t => t.Bookmarks)
                       .HasForeignKey(b => b.TweetId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
-
-            // ====================== TÙY CHỈNH TÊN BẢNG (tùy chọn, đẹp hơn) ======================
+            // ====================== TÙY CHỈNH TÊN BẢNG  ======================
             builder.Entity<ApplicationUser>().ToTable("Users");
             builder.Entity<Tweet>().ToTable("Tweets");
             builder.Entity<UserFollow>().ToTable("UserFollows");

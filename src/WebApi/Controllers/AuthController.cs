@@ -146,14 +146,14 @@ namespace Server.Controllers
                         UserName = payload.Email,
                         Email = payload.Email,
                         DisplayName = payload.Name ?? payload.Email.Split('@')[0],
-                        PhotoUrl = payload.Picture,
+                        ImageUrl = payload.Picture,
                         EmailConfirmed = true
                     };
                     await _userManager.CreateAsync(user);
                 }
-                else if (!string.IsNullOrEmpty(payload.Picture) && user.PhotoUrl != payload.Picture)
+                else if (!string.IsNullOrEmpty(payload.Picture) && user.ImageUrl != payload.Picture)
                 {
-                    user.PhotoUrl = payload.Picture;
+                    user.ImageUrl = payload.Picture;
                     await _userManager.UpdateAsync(user);
                 }
 
@@ -198,15 +198,15 @@ namespace Server.Controllers
                 accent = u.Accent ?? "blue",
                 website = u.Website ?? "",
                 location = u.Location ?? "",
-                photoURL = u.PhotoUrl ?? "",
-                coverPhotoURL = u.CoverPhotoUrl ?? "",
+                photoURL = u.ImageUrl ?? "",
+                coverPhotoURL = u.CoverPhotoURL ?? "",
                 verified = u.Verified,
                 following = new string[0],
                 followers = new string[0],
                 totalTweets = u.TotalTweets,
                 totalPhotos = u.TotalPhotos,
                 pinnedTweet = u.PinnedTweetId?.ToString(),
-                createdAt = u.CreatedAt.ToString("o"),
+                createdAt = u.CreatedAt.ToString("o"),    
                 updatedAt = u.UpdatedAt.ToString("o")
             };
         }

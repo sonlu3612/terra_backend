@@ -7,6 +7,7 @@ namespace Core.Entities
     public class ApplicationUser : IdentityUser   
     {
         public string FullName { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
         public string? Bio { get; set; } = string.Empty;
         public string? Theme { get; set; } = "dark";
         public string? Accent { get; set; } = "blue";
@@ -22,6 +23,9 @@ namespace Core.Entities
         public string? PinnedTweetId { get; set; }   
 
         public virtual Tweet? PinnedTweet { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public virtual ICollection<Tweet> Tweets { get; set; } = new List<Tweet>();
 
         public virtual ICollection<UserFollow> Following { get; set; } = new List<UserFollow>();

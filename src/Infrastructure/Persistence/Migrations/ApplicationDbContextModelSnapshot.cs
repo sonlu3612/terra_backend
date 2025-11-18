@@ -28,45 +28,34 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Accent")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CoverPhotoUrl")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                    b.Property<string>("CoverPhotoURL")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("EmailVerifiedAt")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("FollowersCount")
                         .HasColumnType("int");
@@ -74,10 +63,15 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int>("FollowingCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Location")
+                    b.Property<string>("FullName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -94,7 +88,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -103,24 +96,14 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PhotoUrl")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<Guid?>("PinnedTweetId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("PinnedTweetId1")
+                    b.Property<string>("PinnedTweetId")
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Theme")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TotalPhotos")
                         .HasColumnType("int");
@@ -131,25 +114,18 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<bool>("Verified")
                         .HasColumnType("bit");
 
                     b.Property<string>("Website")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -161,7 +137,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("PinnedTweetId1");
+                    b.HasIndex("PinnedTweetId");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -421,7 +397,7 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("Core.Entities.Tweet", "PinnedTweet")
                         .WithMany()
-                        .HasForeignKey("PinnedTweetId1");
+                        .HasForeignKey("PinnedTweetId");
 
                     b.Navigation("PinnedTweet");
                 });
@@ -436,7 +412,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Core.Entities.ApplicationUser", "User")
                         .WithMany("Tweets")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("ParentTweet");
@@ -455,7 +431,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Core.Entities.ApplicationUser", "User")
                         .WithMany("Bookmarks")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Tweet");
@@ -474,7 +450,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Core.Entities.ApplicationUser", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Tweet");
@@ -493,7 +469,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Core.Entities.ApplicationUser", "User")
                         .WithMany("Retweets")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Tweet");
@@ -512,7 +488,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Core.Entities.ApplicationUser", "Following")
                         .WithMany("Followers")
                         .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Follower");
