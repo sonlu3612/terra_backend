@@ -1,5 +1,34 @@
 # terra_backend
 
+## Setup
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/sonlu3612/terra_backend.git
+cd terra_backend
+```
+
+2. Create `src/.env` file and add the following environment variable to configure
+
+```env
+CONNECTION_STRING= "Server=(your_server_name);Database=TerraDb;Integrated Security=True;TrustServerCertificate=True;Connection Timeout=5;ConnectRetryCount=0;"
+```
+
+**Note**: you need to replace `(your_server_name)` with your actual SQL Server instance name.
+
+3. Update database schema using Entity Framework Core migrations (2 ways):
+
+```bash
+cd src && dotnet ef database update
+```
+
+or using npm script:
+
+```bash
+npm run db:update
+```
+
 ## Run the solution
 
 There are two ways to run the solution:
