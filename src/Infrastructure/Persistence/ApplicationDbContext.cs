@@ -10,6 +10,8 @@ namespace Infrastructure.Persistence
             : base(options)
         {
         }
+
+        public DbSet<UserFollow> UserFollows { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

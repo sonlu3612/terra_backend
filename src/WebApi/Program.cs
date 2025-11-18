@@ -71,30 +71,33 @@ builder.Services.AddAuthentication(options =>
             return Task.CompletedTask;
         }
     };
+})
+.AddGoogle(options =>
+{
+    var clientId = builder.Configuration["Google:ClientId"]
+                   ?? throw new InvalidOperationException("Google:ClientId is missing.");
+    var clientSecret = builder.Configuration["Google:ClientSecret"]; // Có thể null nếu chỉ dùng credential flow
+
+    options.ClientId = clientId;
+    if (!string.IsNullOrEmpty(clientSecret))
+        options.ClientSecret = clientSecret;
+
+    options.SignInScheme = IdentityConstants.ExternalScheme;
+    options.CallbackPath = "/signin-google";
+
+    // Cho phép localhost + production
+    options.AuthorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
+    options.TokenEndpoint = "https://oauth2.googleapis.com/token";
 });
-//.AddGoogle(options =>
-//{
-//    var clientId = builder.Configuration["Google:ClientId"]
-//                   ?? throw new InvalidOperationException("Google:ClientId is missing.");
-//    var clientSecret = builder.Configuration["Google:ClientSecret"]; // Có thể null nếu chỉ dùng credential flow
-
-//    options.ClientId = clientId;
-//    if (!string.IsNullOrEmpty(clientSecret))
-//        options.ClientSecret = clientSecret;
-
-//    options.SignInScheme = IdentityConstants.ExternalScheme;
-//    options.CallbackPath = "/signin-google";
-
-//    // Cho phép localhost + production
-//    options.AuthorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-//    options.TokenEndpoint = "https://oauth2.googleapis.com/token";
-//});
 
 // ==================== 4. DI SERVICES ====================
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IOtpService, OtpService>();
 builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
+
+builder.Services.AddScoped<IFollowService, FollowService>();
+
 builder.Services.AddMemoryCache(); // Cho OTP
 
 // ==================== 5. CONTROLLERS & SWAGGER ====================
@@ -132,7 +135,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-//// ==================== 6. CORS (rất quan trọng cho Vite frontend) ====================
+// ==================== 6. CORS (rất quan trọng cho Vite frontend) ====================
 //builder.Services.AddCors(options =>
 //{
 //    options.AddPolicy("AllowTerraFrontend", policy =>
