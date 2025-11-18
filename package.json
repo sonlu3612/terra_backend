@@ -2,7 +2,8 @@
   "version": "1.0.0",
   "description": "Terra Backend",
   "scripts": {
-    "dev": "cd src/WebApi && dotnet run"
+    "dev": "cd src && dotnet run",
+    "db:update": "cd src && dotnet ef database update"
   },
   "repository": {
     "type": "git",

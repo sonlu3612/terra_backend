@@ -10,5 +10,7 @@ namespace Infrastructure.Persistence
             : base(options)
         {
         }
+
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
     }
 }
