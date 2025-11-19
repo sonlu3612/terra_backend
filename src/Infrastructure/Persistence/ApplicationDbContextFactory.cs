@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Infrastructure.Persistence;
@@ -6,6 +7,10 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 {
     public ApplicationDbContext CreateDbContext(string[] args)
     {
-        throw new NotImplementedException();
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+        optionsBuilder.UseSqlServer(
+            DbContextHelper.GetConnectionString()
+        );
+        return new ApplicationDbContext(optionsBuilder.Options);
     }
 }
