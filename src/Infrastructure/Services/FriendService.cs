@@ -4,6 +4,7 @@ using Core.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Core.Entities;
 
 public class FriendService : IFriendService
 {

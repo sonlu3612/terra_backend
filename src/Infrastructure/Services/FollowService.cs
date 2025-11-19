@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Entities;
 
 namespace Infrastructure.Services
 {
@@ -29,7 +30,7 @@ namespace Infrastructure.Services
                 throw new ArgumentException("Cannot follow yourself");
             }
             var existing = await _context.UserFollows
-                .AnyAsync(f => f.FollowerId == followingId && f.FollowingId == followingId);
+                .AnyAsync(f => f.FollowerId == followerId && f.FollowingId == followingId);
 
             if (!existing) 
             {
@@ -48,7 +49,7 @@ namespace Infrastructure.Services
             var follow = await _context.UserFollows
                 .FirstOrDefaultAsync(f => f.FollowerId == followerId && f.FollowingId == followingId);
 
-            if(follow == null)
+            if(follow != null)
             {
                 _context.UserFollows.Remove(follow);
                 await _context.SaveChangesAsync();

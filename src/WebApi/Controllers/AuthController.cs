@@ -1,7 +1,7 @@
-﻿// Server/Controllers/AuthController.cs
+﻿// WebApi/Controllers/AuthController.cs
 using Application.DTOs;
-using Core.Entities;
 using Core.Interfaces;
+using Core.Entities;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
-namespace Server.Controllers
+namespace WebApi.Controllers
 {
     [Route("api/auth")]
     [ApiController]
@@ -185,27 +185,29 @@ namespace Server.Controllers
         [HttpPost("refresh")]
         public IActionResult Refresh() => Ok(new { token = "new-jwt-placeholder" });
 
-        // Helper: Đúng 100% với src/lib/types/user.ts của Terra
+        // Helper: Map ApplicationUser to frontend User type
+        // Frontend expects: displayName (not name), imageUrl (not photoURL)
         private object MapToUserResponse(ApplicationUser u)
         {
             return new
             {
-                id = u.Id.ToString(),
-                name = string.IsNullOrEmpty(u.DisplayName) ? u.UserName : u.DisplayName,
-                username = u.UserName,
-                bio = u.Bio ?? "",
+                id = u.Id,
+                username = u.UserName ?? string.Empty,
+                displayName = string.IsNullOrEmpty(u.DisplayName) ? u.UserName ?? string.Empty : u.DisplayName,
+                email = u.Email,
+                bio = u.Bio,
                 theme = u.Theme ?? "light",
                 accent = u.Accent ?? "blue",
-                website = u.Website ?? "",
-                location = u.Location ?? "",
-                photoURL = u.ImageUrl ?? "",
-                coverPhotoURL = u.CoverPhotoURL ?? "",
+                website = u.Website,
+                location = u.Location,
+                imageUrl = u.ImageUrl ?? "/assets/twitter-avatar.jpg",
+                coverPhotoURL = u.CoverPhotoURL,
                 verified = u.Verified,
-                following = new string[0],
-                followers = new string[0],
                 totalTweets = u.TotalTweets,
                 totalPhotos = u.TotalPhotos,
-                pinnedTweet = u.PinnedTweetId?.ToString(),
+                pinnedTweetId = u.PinnedTweetId,
+                following = new string[0], // Populated by separate endpoints
+                followers = new string[0], // Populated by separate endpoints
                 createdAt = u.CreatedAt.ToString("o"),    
                 updatedAt = u.UpdatedAt.ToString("o")
             };

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Core.Entities;
+using Core.Entities;
 
 namespace Infrastructure.Persistence
 {

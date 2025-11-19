@@ -1,5 +1,5 @@
-using Core.Entities;
 using Application.DTOs;
+using Core.Entities;
 
 namespace Application.Mappers
 {

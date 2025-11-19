@@ -1,9 +1,9 @@
 using Application.DTOs;
 using Application.Exceptions;
 using Application.Mappers;
-using Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Core.Entities;
 
 namespace Application.Features.Queries.Users
 {

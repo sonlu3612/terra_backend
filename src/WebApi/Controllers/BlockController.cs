@@ -1,8 +1,8 @@
-﻿using Core.Entities;
-using Core.Interfaces;
+﻿using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Core.Entities;
 
 namespace WebApi.Controllers
 {

@@ -12,6 +12,7 @@ namespace Infrastructure.Services
     using Infrastructure.Persistence;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+    using Core.Entities;
 
     public class BlockService : IBlockService
     {
