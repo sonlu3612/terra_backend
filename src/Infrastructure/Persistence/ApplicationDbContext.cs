@@ -10,14 +10,46 @@ namespace Infrastructure.Persistence
             : base(options)
         {
         }
-
+        
         public DbSet<UserFollow> UserFollows { get; set; }
-
         public DbSet<FriendRequest> FriendRequests { get; set; } = null!;
         public DbSet<UserBlock> UserBlocks { get; set; } = null!;
+        public DbSet<Tweet> Tweets { get; set; } = null!;
+        public DbSet<TweetLike> TweetLikes { get; set; } = null!;
+        public DbSet<TweetRetweet> TweetRetweets { get; set; } = null!;
+        public DbSet<TweetBookmark> TweetBookmarks { get; set; } = null!;
+        public DbSet<TweetMedia> TweetMedias { get; set; } = null!;
+        public DbSet<MediaAsset> MediaAssets { get; set; } = null!;
+        public DbSet<AuthSession> AuthSessions { get; set; } = null!;
+        public DbSet<UserStat> UserStats { get; set; } = null!;
+        public DbSet<Trend> Trends { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            // ====================== APPLICATION USER ======================
+            builder.Entity<ApplicationUser>(entity =>
+            {
+                entity.Property(u => u.FullName).IsRequired();
+                entity.Property(u => u.DisplayName).IsRequired();
+                entity.Property(u => u.Bio).HasMaxLength(400);
+                entity.Property(u => u.Theme).HasMaxLength(20);
+                entity.Property(u => u.Accent).HasMaxLength(20);
+                entity.Property(u => u.Website).HasMaxLength(255);
+                entity.Property(u => u.Location).HasMaxLength(100);
+                entity.Property(u => u.ImageUrl).HasMaxLength(500);
+                entity.Property(u => u.CoverPhotoURL).HasMaxLength(500);
+                entity.Property(u => u.TotalTweets).HasDefaultValue(0);
+                entity.Property(u => u.TotalPhotos).HasDefaultValue(0);
+                entity.Property(u => u.FollowingCount).HasDefaultValue(0);
+                entity.Property(u => u.FollowersCount).HasDefaultValue(0);
+                entity.Property(u => u.Verified).HasDefaultValue(false);
+
+                entity.HasOne(u => u.PinnedTweet)
+                      .WithMany()
+                      .HasForeignKey(u => u.PinnedTweetId)
+                      .OnDelete(DeleteBehavior.NoAction);
+            });
 
             // ====================== USER FOLLOW ======================
             builder.Entity<UserFollow>(entity =>
@@ -142,13 +174,74 @@ namespace Infrastructure.Persistence
 
                 entity.HasIndex(ub => ub.BlockedId);
             });
+
+            // ====================== TWEET MEDIA ======================
+            builder.Entity<TweetMedia>(entity =>
+            {
+                entity.HasKey(tm => new { tm.TweetId, tm.MediaId });
+
+                entity.HasOne(tm => tm.Tweet)
+                      .WithMany(t => t.Media)
+                      .HasForeignKey(tm => tm.TweetId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(tm => tm.Media)
+                      .WithMany()
+                      .HasForeignKey(tm => tm.MediaId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(tm => tm.TweetId);
+            });
+
+            // ====================== MEDIA ASSET ======================
+            builder.Entity<MediaAsset>(entity =>
+            {
+                entity.HasKey(ma => ma.Id);
+                entity.Property(ma => ma.Url).IsRequired();
+                entity.Property(ma => ma.MimeType).IsRequired();
+            });
+
+            // ====================== AUTH SESSION ======================
+            builder.Entity<AuthSession>(entity =>
+            {
+                entity.HasKey(s => s.Id);
+                entity.Property(s => s.RefreshToken).IsRequired();
+                entity.Property(s => s.UserId).IsRequired();
+
+                entity.HasOne(s => s.User)
+                      .WithMany()
+                      .HasForeignKey(s => s.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // ====================== USER STAT ======================
+            builder.Entity<UserStat>(entity =>
+            {
+                entity.HasKey(us => us.UserId);
+                entity.Property(us => us.UserId).IsRequired();
+
+                entity.HasOne(us => us.User)
+                      .WithMany()
+                      .HasForeignKey(us => us.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // ====================== TREND ======================
+            builder.Entity<Trend>(entity =>
+            {
+                entity.HasKey(tr => tr.Id);
+                entity.Property(tr => tr.Name).IsRequired();
+                entity.Property(tr => tr.Query).IsRequired();
+                entity.Property(tr => tr.Url).IsRequired();
+            });
+
             // ====================== TÙY CHỈNH TÊN BẢNG  ======================
-            builder.Entity<ApplicationUser>().ToTable("Users");
-            builder.Entity<Tweet>().ToTable("Tweets");
-            builder.Entity<UserFollow>().ToTable("UserFollows");
-            builder.Entity<TweetLike>().ToTable("TweetLikes");
-            builder.Entity<TweetRetweet>().ToTable("TweetRetweets");
-            builder.Entity<TweetBookmark>().ToTable("TweetBookmarks");
+            // builder.Entity<ApplicationUser>().ToTable("Users");
+            // builder.Entity<Tweet>().ToTable("Tweets");
+            // builder.Entity<UserFollow>().ToTable("UserFollows");
+            // builder.Entity<TweetLike>().ToTable("TweetLikes");
+            // builder.Entity<TweetRetweet>().ToTable("TweetRetweets");
+            // builder.Entity<TweetBookmark>().ToTable("TweetBookmarks");
         }
     }
 }

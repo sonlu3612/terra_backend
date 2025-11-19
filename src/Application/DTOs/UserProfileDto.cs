@@ -21,9 +21,9 @@ namespace Application.DTOs
 
         public string? Location { get; set; }
 
-        public string PhotoUrl { get; set; } = "/assets/twitter-avatar.jpg";
+        public string ImageUrl { get; set; } = "/assets/twitter-avatar.jpg";
 
-        public string? CoverPhotoUrl { get; set; }
+        public string? CoverPhotoURL { get; set; }
 
         public bool Verified { get; set; }
 

@@ -28,20 +28,23 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Accent")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
                     b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CoverPhotoURL")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -58,20 +61,26 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int>("FollowersCount")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<int>("FollowingCount")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -103,13 +112,18 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Theme")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("TotalPhotos")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<int>("TotalTweets")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -122,10 +136,13 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("Verified")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Website")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -139,7 +156,34 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PinnedTweetId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Core.Entities.AuthSession", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AuthSessions");
                 });
 
             modelBuilder.Entity("Core.Entities.FriendRequest", b =>
@@ -173,6 +217,83 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("Status");
 
                     b.ToTable("FriendRequests");
+                });
+
+            modelBuilder.Entity("Core.Entities.MediaAsset", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int?>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("Width")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MediaAssets");
+                });
+
+            modelBuilder.Entity("Core.Entities.Trend", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("CapturedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Query")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("TweetVolume")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("Woeid")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Trends");
                 });
 
             modelBuilder.Entity("Core.Entities.Tweet", b =>
@@ -218,7 +339,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tweets", (string)null);
+                    b.ToTable("Tweets");
                 });
 
             modelBuilder.Entity("Core.Entities.TweetBookmark", b =>
@@ -236,7 +357,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TweetId");
 
-                    b.ToTable("TweetBookmarks", (string)null);
+                    b.ToTable("TweetBookmarks");
                 });
 
             modelBuilder.Entity("Core.Entities.TweetLike", b =>
@@ -254,7 +375,27 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TweetId");
 
-                    b.ToTable("TweetLikes", (string)null);
+                    b.ToTable("TweetLikes");
+                });
+
+            modelBuilder.Entity("Core.Entities.TweetMedia", b =>
+                {
+                    b.Property<string>("TweetId")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("MediaId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.HasKey("TweetId", "MediaId");
+
+                    b.HasIndex("MediaId");
+
+                    b.HasIndex("TweetId");
+
+                    b.ToTable("TweetMedias");
                 });
 
             modelBuilder.Entity("Core.Entities.TweetRetweet", b =>
@@ -272,7 +413,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TweetId");
 
-                    b.ToTable("TweetRetweets", (string)null);
+                    b.ToTable("TweetRetweets");
                 });
 
             modelBuilder.Entity("Core.Entities.UserBlock", b =>
@@ -308,7 +449,28 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("FollowingId");
 
-                    b.ToTable("UserFollows", (string)null);
+                    b.ToTable("UserFollows");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserStat", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LikesJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RetweetsJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("UserStats");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -448,9 +610,21 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("Core.Entities.Tweet", "PinnedTweet")
                         .WithMany()
-                        .HasForeignKey("PinnedTweetId");
+                        .HasForeignKey("PinnedTweetId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("PinnedTweet");
+                });
+
+            modelBuilder.Entity("Core.Entities.AuthSession", b =>
+                {
+                    b.HasOne("Core.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Entities.FriendRequest", b =>
@@ -470,6 +644,17 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Addressee");
 
                     b.Navigation("Requester");
+                });
+
+            modelBuilder.Entity("Core.Entities.MediaAsset", b =>
+                {
+                    b.HasOne("Core.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Entities.Tweet", b =>
@@ -528,6 +713,25 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Core.Entities.TweetMedia", b =>
+                {
+                    b.HasOne("Core.Entities.MediaAsset", "Media")
+                        .WithMany()
+                        .HasForeignKey("MediaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Tweet", "Tweet")
+                        .WithMany("Media")
+                        .HasForeignKey("TweetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Media");
+
+                    b.Navigation("Tweet");
+                });
+
             modelBuilder.Entity("Core.Entities.TweetRetweet", b =>
                 {
                     b.HasOne("Core.Entities.Tweet", "Tweet")
@@ -583,6 +787,17 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Follower");
 
                     b.Navigation("Following");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserStat", b =>
+                {
+                    b.HasOne("Core.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -664,6 +879,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Bookmarks");
 
                     b.Navigation("Likes");
+
+                    b.Navigation("Media");
 
                     b.Navigation("Replies");
 

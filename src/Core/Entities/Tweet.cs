@@ -28,7 +28,7 @@ namespace Core.Entities
 
         public virtual Tweet? ParentTweet { get; set; }
         public virtual ICollection<Tweet> Replies { get; set; } = new List<Tweet>();
-
+        public virtual ICollection<TweetMedia> Media { get; set; } = new List<TweetMedia>();
         public virtual ICollection<TweetLike> Likes { get; set; } = new List<TweetLike>();
         public virtual ICollection<TweetRetweet> Retweets { get; set; } = new List<TweetRetweet>();
         public virtual ICollection<TweetBookmark> Bookmarks { get; set; } = new List<TweetBookmark>();
